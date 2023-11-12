@@ -72,11 +72,19 @@ def get_D(freq_image):
     return D
 
 
-def butter_filter(freq_image):
+def butter_filter(freq_image, order, cutoff):
     D = get_D(freq_image)
-    plt.figure()
-    plt.imshow(D/np.max(D), cmap='gray')
-    plt.show()
+    
+    H = 1 / (1 + D/cutoff)**order
+    return freq_image * H
+    
+
+def gaussian_filter(freq_image, cutoff):
+    D = get_D(freq_image)
+    pwr = -1 * np.power(D, 2) / (2 * cutoff)**2
+    
+    H = np.power(np.exp(1), pwr)
+    return freq_image * H
 
 
 def ILP_filter(freq_image, cutoff=10):
@@ -106,12 +114,40 @@ if __name__ == '__main__':
     plt.imshow(normalize_freq_transform(fft_image), cmap='gray')
     plt.title('Fourier Spectrum')
     
-    for cutoff in [10, 30, 60, 160, 460]:
+    plt.figure()
+    i = 1
+    for cutoff in [10, 30, 60, 160, 260, 460]:
         filtered_image = ILP_filter(fft_image, cutoff)
         filtered_image = inverse_transform(filtered_image)
         
-        plt.figure()
+        plt.subplot(2, 3, i)
         plt.imshow(filtered_image, cmap='gray')
-        plt.title(f'Cutoff: {cutoff}')
+        plt.title(f'ILPF Cutoff: {cutoff}')
+        plt.axis('off')
+        i += 1
+    
+    plt.figure()
+    i = 1
+    for cutoff in [10, 30, 60, 160, 260, 460]:
+        filtered_image = butter_filter(fft_image, 4, cutoff)
+        filtered_image = inverse_transform(filtered_image)
+        
+        plt.subplot(2, 3, i)
+        plt.imshow(filtered_image, cmap='gray')
+        plt.title(f'Butter Cutoff: {cutoff}')
+        plt.axis('off')
+        i += 1
+        
+    plt.figure()
+    i = 1
+    for cutoff in [10, 30, 60, 160, 260, 460]:
+        filtered_image = gaussian_filter(fft_image, cutoff)
+        filtered_image = inverse_transform(filtered_image)
+        
+        plt.subplot(2, 3, i)
+        plt.imshow(filtered_image, cmap='gray')
+        plt.title(f'Gaussian Cutoff: {cutoff}')
+        plt.axis('off')
+        i += 1
     
     plt.show()
