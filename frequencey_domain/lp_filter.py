@@ -116,7 +116,7 @@ if __name__ == '__main__':
     
     plt.figure()
     i = 1
-    for cutoff in [10, 30, 60, 160, 260, 460]:
+    for cutoff in [10, 30, 60, 130, 260, 460]:
         filtered_image = ILP_filter(fft_image, cutoff)
         filtered_image = inverse_transform(filtered_image)
         

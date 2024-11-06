@@ -11,7 +11,7 @@ def to_bits(image, bits=8):
 
 
 if __name__ == "__main__":
-    image = cv2.imread('cat.jpg', cv2.IMREAD_GRAYSCALE)
+    image = cv2.imread('images/cat.jpg', cv2.IMREAD_GRAYSCALE)
     
     mask = 0b11100000
     masked_image = np.bitwise_and(image, mask)
